@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "result": [
+    {
+      "update_id": 1,
+      "message": {
+        "message_id": 3,
+        "from": {
+          "id": 2,
+          "is_bot": false,
+          "first_name": "John",
+          "last_name": "McClane",
+          "username": "john",
+          "language_code": "uk"
+        },
+        "chat": {
+          "id": 4,
+          "first_name": "John",
+          "last_name": "McClane",
+          "username": "john",
+          "type": "private"
+        },
+        "date": 1569399787,
+        "text": "Hello, World!"
+      }
+    }
+  ]
+}
