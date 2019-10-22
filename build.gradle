@@ -18,9 +18,27 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
+ext {
+    testContainversVersion = '1.12.0'
+    lombok = "org.projectlombok:lombok:1.18.10"
+}
+
 group = "org.motometer.telegram"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+sourceSets {
+    integrationTest {
+        compileClasspath += main.output + main.compileClasspath
+        compileClasspath += test.output + test.compileClasspath
+        runtimeClasspath += main.runtimeClasspath + test.runtimeClasspath
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
 
 repositories {
     mavenLocal()
@@ -34,14 +52,21 @@ dependencies {
 
     compileOnly "org.immutables:value:2.8.0"
     compileOnly "org.immutables:gson:2.8.0"
-    compileOnly "org.projectlombok:lombok:1.18.10"
+    compileOnly lombok
 
     annotationProcessor "org.immutables:value:2.8.0"
-    annotationProcessor "org.projectlombok:lombok:1.18.10"
+    annotationProcessor lombok
 
-    testCompile "org.junit.jupiter:junit-jupiter:5.5.1"
-    testCompile "org.assertj:assertj-core:3.13.2"
-    testCompile "commons-io:commons-io:2.6"
+    integrationTestAnnotationProcessor lombok
+
+    testImplementation "org.junit.jupiter:junit-jupiter:5.5.1"
+    testImplementation "org.assertj:assertj-core:3.13.2"
+
+    integrationTestImplementation "commons-io:commons-io:2.6"
+    integrationTestImplementation "org.testcontainers:testcontainers:$testContainversVersion"
+    integrationTestImplementation "org.testcontainers:junit-jupiter:$testContainversVersion"
+    integrationTestImplementation 'com.github.tomakehurst:wiremock-jre8:2.25.1'
+    integrationTestImplementation 'org.skyscreamer:jsonassert:1.5.0'
 }
 
 test {
@@ -91,3 +116,15 @@ publishing {
         }
     }
 }
+
+task integrationTest(type: Test) {
+    group 'verification'
+    description 'Runs the integration tests.'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    outputs.upToDateWhen { false }
+    mustRunAfter test
+    useJUnitPlatform()
+}
+
+check.dependsOn integrationTest
