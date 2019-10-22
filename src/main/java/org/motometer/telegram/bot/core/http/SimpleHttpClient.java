@@ -7,37 +7,63 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.util.Objects.requireNonNull;
 
 @RequiredArgsConstructor
-public class SimpleHttpClient implements HttpClient {
+class SimpleHttpClient implements HttpClient {
 
     private final int connectTimeout;
     private final int readTimeout;
 
+    private Map<Request.Method, ConnectionFactory> factory;
+
+    {
+        Map<Request.Method, ConnectionFactory> map = new HashMap<>();
+        map.put(Request.Method.GET, this::createGETConnection);
+        map.put(Request.Method.POST, this::createPOSTConnection);
+        factory = Collections.unmodifiableMap(map);
+    }
+
     @Override
     public Response exchange(Request request) throws IOException {
-        HttpURLConnection con = createConnection(request);
+        HttpURLConnection urlConnection = factory.get(request.method()).create(request);
 
-        con.connect();
-
-        String content = readContent(con);
+        urlConnection.connect();
 
         return ImmutableResponse.builder()
-            .content(content)
-            .status(con.getResponseCode())
+            .content(readContent(urlConnection))
+            .status(urlConnection.getResponseCode())
             .build();
     }
 
     @NotNull
-    private HttpURLConnection createConnection(Request request) throws IOException {
+    private HttpURLConnection createGETConnection(Request request) throws IOException {
         URL url = new URL(request.url());
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod(request.method().name());
-        con.setConnectTimeout(connectTimeout);
-        con.setReadTimeout(readTimeout);
-        return con;
+        HttpURLConnection result = (HttpURLConnection) url.openConnection();
+        result.setRequestMethod(request.method().name());
+        result.setConnectTimeout(connectTimeout);
+        result.setReadTimeout(readTimeout);
+        return result;
+    }
+
+    @NotNull
+    private HttpURLConnection createPOSTConnection(Request request) throws IOException {
+        HttpURLConnection result = createGETConnection(request);
+        result.setDoInput(true);
+        result.setDoOutput(true);
+        try (OutputStream os = result.getOutputStream()) {
+            String body = requireNonNull(request.body());
+            os.write(body.getBytes(Charset.defaultCharset()));
+        }
+        return result;
     }
 
     private String readContent(HttpURLConnection con) throws IOException {
@@ -52,5 +78,9 @@ public class SimpleHttpClient implements HttpClient {
         in.close();
 
         return content.toString();
+    }
+
+    interface ConnectionFactory {
+        HttpURLConnection create(Request request) throws IOException;
     }
 }

@@ -1,7 +1,6 @@
 package org.motometer.telegram.bot.core;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -13,15 +12,18 @@ import org.testcontainers.junit.jupiter.Container;
 public abstract class AbstractIntegrationTest {
 
     @Container
-    private static GenericContainer wiremock = new GenericContainer("rodolpheche/wiremock").withExposedPorts(8080);
-
-    @Getter
-    private String host;
+    private static GenericContainer wireMock = new GenericContainer("rodolpheche/wiremock").withExposedPorts(8080);
 
     @BeforeEach
-    void setUp() {
-        Integer wireMockPort = wiremock.getMappedPort(8080);
-        WireMock.configureFor(wireMockPort);
-        host = "http://localhost:" + wireMockPort;
+    void setUpWireMock() {
+        WireMock.configureFor(mappedPort());
+    }
+
+    protected String host() {
+        return "http://localhost:" + mappedPort();
+    }
+
+    private Integer mappedPort() {
+        return wireMock.getMappedPort(8080);
     }
 }
