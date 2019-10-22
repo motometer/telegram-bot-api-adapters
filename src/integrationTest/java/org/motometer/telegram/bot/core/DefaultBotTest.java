@@ -27,7 +27,7 @@ class DefaultBotTest extends AbstractIntegrationTest {
     @BeforeEach
     void setUpWireMock() {
         super.setUpWireMock();
-        bot = new BotBuilder()
+        bot = new DefaultBotBuilder()
             .token("token")
             .apiHost(host())
             .build();
