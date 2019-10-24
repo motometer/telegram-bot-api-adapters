@@ -14,8 +14,10 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
 class SimpleHttpClient implements HttpClient {
@@ -57,6 +59,8 @@ class SimpleHttpClient implements HttpClient {
     @NotNull
     private HttpURLConnection createPOSTConnection(Request request) throws IOException {
         HttpURLConnection result = createGETConnection(request);
+        ofNullable(request.contentType())
+            .ifPresent(type -> result.setRequestProperty("Content-Type", type));
         result.setDoInput(true);
         result.setDoOutput(true);
         try (OutputStream os = result.getOutputStream()) {

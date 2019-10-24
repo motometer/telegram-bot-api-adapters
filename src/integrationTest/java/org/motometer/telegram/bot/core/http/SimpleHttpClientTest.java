@@ -48,12 +48,14 @@ class SimpleHttpClientTest extends AbstractIntegrationTest {
     void exchangePOST() throws IOException, JSONException {
 
         WireMock.stubFor(WireMock.post("/bottoken/getUpdates")
+            .withHeader("Content-Type", equalTo("application/json"))
             .withRequestBody(equalTo("{}"))
             .willReturn(okJson(body)));
 
         ImmutableRequest request = ImmutableRequest.builder()
             .method(Request.Method.POST)
             .url(host() + "/bottoken/getUpdates")
+            .contentType("application/json")
             .body("{}")
             .build();
 

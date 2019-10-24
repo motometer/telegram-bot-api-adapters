@@ -13,6 +13,9 @@ public interface Request {
     @Nullable
     String body();
 
+    @Nullable
+    String contentType();
+
     enum Method {
         GET,
         POST
