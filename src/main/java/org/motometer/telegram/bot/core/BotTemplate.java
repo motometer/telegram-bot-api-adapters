@@ -49,7 +49,9 @@ class BotTemplate {
         return ImmutableRequest.builder()
             .url(baseUri + method)
             .body(gson.toJson(body))
-            .method(Request.Method.POST).build();
+            .method(Request.Method.POST)
+            .contentType("application/json")
+            .build();
     }
 
     private Request request(String method) {
