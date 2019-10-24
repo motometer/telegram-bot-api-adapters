@@ -10,6 +10,10 @@ public interface BotBuilder {
 
     BotBuilder apiHost(String host);
 
+    BotBuilder readTimeout(int value);
+
+    BotBuilder connectTimeout(int value);
+
     static BotBuilder defaultBuilder() {
         return new DefaultBotBuilder();
     }

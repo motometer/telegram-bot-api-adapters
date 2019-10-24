@@ -1,7 +1,10 @@
 package org.motometer.telegram.bot.core;
 
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.motometer.telegram.bot.Bot;
+import org.motometer.telegram.bot.UpdateListener;
+import org.motometer.telegram.bot.WebHookListener;
 import org.motometer.telegram.bot.api.Message;
 import org.motometer.telegram.bot.api.SendMessage;
 import org.motometer.telegram.bot.api.Update;
@@ -14,6 +17,12 @@ import java.util.List;
 class DefaultBot implements Bot {
 
     private final BotTemplate botTemplate;
+    private final Gson gson;
+
+    @Override
+    public WebHookListener createWebHookListener(UpdateListener listener) {
+        return event -> listener.onEvent(gson.fromJson(event, Update.class));
+    }
 
     @Override
     public User me() {

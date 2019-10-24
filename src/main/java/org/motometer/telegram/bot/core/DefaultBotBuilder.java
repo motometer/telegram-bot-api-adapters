@@ -1,7 +1,9 @@
 package org.motometer.telegram.bot.core;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
+import org.jetbrains.annotations.NotNull;
 import org.motometer.telegram.bot.Bot;
 import org.motometer.telegram.bot.core.http.HttpClient;
 
@@ -25,18 +27,24 @@ class DefaultBotBuilder implements BotBuilder {
 
     @Override
     public Bot build() {
+        Gson gson = createGson();
+
+        HttpClient httpClient = HttpClient.defaultClient(connectTimeout, readTimeout);
+
+        return new DefaultBot(new BotTemplate(httpClient, baseUri(), gson), gson);
+    }
+
+    @NotNull
+    private Gson createGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         for (TypeAdapterFactory factory : ServiceLoader.load(TypeAdapterFactory.class)) {
             gsonBuilder.registerTypeAdapterFactory(factory);
         }
-
-        HttpClient httpClient = HttpClient.defaultClient(connectTimeout, readTimeout);
-
-        return new DefaultBot(new BotTemplate(httpClient, baseUri(), gsonBuilder.create()));
+        return gsonBuilder.create();
     }
 
     private String baseUri() {
-        return host + "/bot" + requireNonNull(token) + "/";
+        return host + "/bot" + requireNonNull(token, "Token is mandatory") + "/";
     }
 
     @Override
@@ -48,6 +56,18 @@ class DefaultBotBuilder implements BotBuilder {
     @Override
     public BotBuilder apiHost(String host) {
         this.host = host;
+        return this;
+    }
+
+    @Override
+    public BotBuilder readTimeout(int value) {
+        this.readTimeout = value;
+        return this;
+    }
+
+    @Override
+    public BotBuilder connectTimeout(int value) {
+        this.connectTimeout = value;
         return this;
     }
 }

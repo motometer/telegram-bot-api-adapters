@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 class DefaultBotTest extends AbstractIntegrationTest {
 
-    private static final String UPDATE = "/org/motometer/telegram/api/UpdateTest/update.json";
     private static final String UPDATES = "/org/motometer/telegram/api/UpdateTest/updates.json";
 
     private Bot bot;
