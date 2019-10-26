@@ -5,17 +5,15 @@ buildscript {
     }
     dependencies {
         classpath 'net.researchgate:gradle-release:2.6.0'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
     }
 }
 
 plugins {
     id 'java'
     id 'maven'
-    id 'maven-publish'
+    id 'signing'
     id 'checkstyle'
     id "net.researchgate.release" version "2.6.0"
-    id "com.jfrog.bintray" version "1.8.4"
 }
 
 ext {
@@ -26,6 +24,12 @@ ext {
 group = "org.motometer.telegram"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+ext."signing.keyId" = System.getenv('GPG_KEY_ID')
+ext."signing.secretKeyRingFile" = System.getenv('GPG_KEY_LOCATION')
+ext."signing.password" = System.getenv('GPG_PASSWORD')
+ext."ossrhUsername" = System.getenv('OSSRH_USERNAME')
+ext."ossrhPassword" = System.getenv('OSSRH_PASSWORD')
 
 sourceSets {
     integrationTest {
@@ -89,35 +93,6 @@ release {
     }
 }
 
-bintray {
-    user = System.getenv('BINTRAY_USERNAME')
-    key = System.getenv('BINTRAY_PASSWORD')
-    publications = ['bintrayPublication']
-    pkg {
-        repo = 'mvn'
-        name = project.name
-        userOrg = 'motometer'
-        vcsUrl = 'https://github.com/motometer/telegram-bot-core'
-        version {
-            name = project.version
-            released = new Date()
-            vcsTag = project.version
-        }
-    }
-}
-
-publishing {
-    publications {
-        bintrayPublication(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            groupId project.group
-            artifactId project.name
-            version project.version
-        }
-    }
-}
-
 task integrationTest(type: Test) {
     group 'verification'
     description 'Runs the integration tests.'
@@ -128,4 +103,62 @@ task integrationTest(type: Test) {
     useJUnitPlatform()
 }
 
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.allTasks.any { it.name == 'build' || it.name == 'assemble' }) {
+        tasks.findAll {
+            it.name == 'signArchives' || it.name == 'signDocsJar' || it.name == 'signTestJar'
+        }.each { task ->
+            task.enabled = false
+        }
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+            pom.project {
+                name = 'Telegram Bot API implementation'
+                packaging 'jar'
+                description 'Telegram Bot API implementation'
+                url = 'https://github.com/motometer/telegram-bot-client'
+
+                scm {
+                    connection = 'scm:git:https://github.com/motometer/telegram-bot-client.git'
+                    developerConnection = 'scm:git:https://github.com/motometer/telegram-bot-client.git'
+                    url = 'https://github.com/motometer/telegram-bot-client'
+                }
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'vbychkovskyi'
+                        name = 'Viacheslav Bychkovskyi'
+                        email = 'vbychkovskyy@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign configurations.archives
+}
+
 check.dependsOn integrationTest
+uploadArchives.dependsOn signArchives
