@@ -1,7 +1,6 @@
 package org.motometer.telegram.bot.core.http;
 
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +13,6 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
@@ -46,7 +44,6 @@ class SimpleHttpClient implements HttpClient {
             .build();
     }
 
-    @NotNull
     private HttpURLConnection createGETConnection(Request request) throws IOException {
         URL url = new URL(request.url());
         HttpURLConnection result = (HttpURLConnection) url.openConnection();
@@ -56,7 +53,6 @@ class SimpleHttpClient implements HttpClient {
         return result;
     }
 
-    @NotNull
     private HttpURLConnection createPOSTConnection(Request request) throws IOException {
         HttpURLConnection result = createGETConnection(request);
         ofNullable(request.contentType())

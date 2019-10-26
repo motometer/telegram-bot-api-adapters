@@ -3,7 +3,8 @@ package org.motometer.telegram.bot.core;
 
 import org.immutables.gson.Gson;
 import org.immutables.value.Value;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 @Value.Immutable
 @Gson.TypeAdapters
