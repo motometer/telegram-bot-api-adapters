@@ -31,6 +31,11 @@ ext."signing.password" = System.getenv('GPG_PASSWORD')
 ext."ossrhUsername" = System.getenv('OSSRH_USERNAME')
 ext."ossrhPassword" = System.getenv('OSSRH_PASSWORD')
 
+ext.'immutables' = 'org.immutables:value:2.8.0'
+ext.'immutablesGson' = 'org.immutables:gson:2.8.0'
+ext.'lombok' = 'org.projectlombok:lombok:1.18.10'
+ext.'jsr305' = 'com.google.code.findbugs:jsr305:3.0.1'
+
 sourceSets {
     integrationTest {
         compileClasspath += main.output + main.compileClasspath
@@ -53,17 +58,18 @@ repositories {
 dependencies {
     compile 'com.google.code.gson:gson:2.8.6'
     compile 'org.motometer.telegram:telegram-bot-api:0.0.7-SNAPSHOT'
-    implementation "org.jetbrains:annotations:16.0.1"
 
-    compileOnly "org.immutables:value:2.8.0"
-    compileOnly "org.immutables:gson:2.8.0"
+    compileOnly jsr305
+    compileOnly immutables
+    compileOnly immutablesGson
     compileOnly lombok
 
-    annotationProcessor "org.immutables:value:2.8.0"
+    annotationProcessor immutables
     annotationProcessor lombok
 
     integrationTestAnnotationProcessor lombok
 
+    testCompileOnly jsr305
     testImplementation "org.junit.jupiter:junit-jupiter:5.5.1"
     testImplementation "org.assertj:assertj-core:3.13.2"
     testCompile "commons-io:commons-io:2.6"
@@ -79,7 +85,7 @@ test {
 }
 
 task sourcesJar(type: Jar) {
-    classifier = "sources"
+    archiveClassifier.set('sources')
     from sourceSets.main.allSource
 }
 

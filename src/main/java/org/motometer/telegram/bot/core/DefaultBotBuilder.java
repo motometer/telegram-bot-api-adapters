@@ -3,7 +3,6 @@ package org.motometer.telegram.bot.core;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
-import org.jetbrains.annotations.NotNull;
 import org.motometer.telegram.bot.Bot;
 import org.motometer.telegram.bot.core.http.HttpClient;
 
@@ -60,7 +59,6 @@ class DefaultBotBuilder implements BotBuilder {
         return null;
     }
 
-    @NotNull
     private static Gson createGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         for (TypeAdapterFactory factory : ServiceLoader.load(TypeAdapterFactory.class)) {

@@ -1,7 +1,8 @@
 package org.motometer.telegram.bot.core.http;
 
 import org.immutables.value.Value;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 @Value.Immutable
 public interface Request {
