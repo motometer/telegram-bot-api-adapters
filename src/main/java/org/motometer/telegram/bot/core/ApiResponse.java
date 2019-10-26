@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
 @Gson.TypeAdapters
-public interface ApiResponse<T> {
+interface ApiResponse<T> {
 
     @Gson.Named("ok")
     boolean isOk();
