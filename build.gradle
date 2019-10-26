@@ -42,9 +42,8 @@ configurations {
 
 repositories {
     mavenLocal()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     mavenCentral()
-    maven { url "https://dl.bintray.com/motometer/mvn" }
-    jcenter()
 }
 
 dependencies {

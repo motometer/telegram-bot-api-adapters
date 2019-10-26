@@ -20,7 +20,7 @@ class DefaultBot implements Bot {
     private final Gson gson;
 
     @Override
-    public WebHookListener createWebHookListener(UpdateListener listener) {
+    public WebHookListener adaptListener(UpdateListener listener) {
         return event -> listener.onEvent(gson.fromJson(event, Update.class));
     }
 

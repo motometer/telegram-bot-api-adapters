@@ -21,7 +21,7 @@ class DefaultBotTest {
 
         CompletableFuture<Update> result = new CompletableFuture<>();
 
-        bot.createWebHookListener(result::complete)
+        bot.adaptListener(result::complete)
             .onEvent(IOUtils.resourceToString(UPDATE, Charset.defaultCharset()));
 
         assertThat(result.isDone());
