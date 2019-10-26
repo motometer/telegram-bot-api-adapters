@@ -9,6 +9,7 @@ import org.motometer.telegram.bot.core.http.ImmutableRequest;
 import org.motometer.telegram.bot.core.http.Request;
 import org.motometer.telegram.bot.core.http.Response;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -19,18 +20,18 @@ class BotTemplate {
     private final Gson gson;
 
     <T, R> R execute(T requestBody, Method<R> method) {
-        Request request = request(method.getValue(), requestBody);
+        Request request = createRequest(method.value(), Request.HttpMethod.POST, gson.toJson(requestBody));
         return execute(method, request);
     }
 
     <T> T execute(Method<T> method) {
-        return execute(method, request(method.getValue()));
+        return execute(method, createRequest(method.value()));
     }
 
     private <T> T execute(Method<T> method, Request request) {
         try {
             Response response = httpClient.exchange(request);
-            TypeAdapter<ApiResponse<T>> adapter = gson.getAdapter(method.getTypeToken());
+            TypeAdapter<ApiResponse<T>> adapter = gson.getAdapter(method.typeToken());
             final ApiResponse<T> parsedResponse = adapter.fromJson(response.content());
             return checkError(parsedResponse);
         } catch (final IOException ex) {
@@ -45,19 +46,15 @@ class BotTemplate {
         throw new BotException(response.description());
     }
 
-    private <T> Request request(String method, T body) {
-        return ImmutableRequest.builder()
-            .url(baseUri + method)
-            .body(gson.toJson(body))
-            .method(Request.Method.POST)
-            .contentType("application/json")
-            .build();
+    private Request createRequest(String botMethod) {
+        return createRequest(botMethod, Request.HttpMethod.GET, null);
     }
 
-    private Request request(String method) {
+    private Request createRequest(String botMethod, Request.HttpMethod httpMethod, @Nullable String body) {
         return ImmutableRequest.builder()
-            .url(baseUri + method)
-            .method(Request.Method.GET)
+            .url(baseUri + botMethod)
+            .body(body)
+            .httpMethod(httpMethod)
             .build();
     }
 }

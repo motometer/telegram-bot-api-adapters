@@ -1,7 +1,5 @@
 package org.motometer.telegram.bot.core.http;
 
-import lombok.RequiredArgsConstructor;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,26 +13,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
 
-@RequiredArgsConstructor
 class SimpleHttpClient implements HttpClient {
 
     private final int connectTimeout;
     private final int readTimeout;
-
-    private Map<Request.Method, ConnectionFactory> factory;
+    private final Map<Request.HttpMethod, ConnectionFactory> factory;
 
     {
-        Map<Request.Method, ConnectionFactory> map = new HashMap<>();
-        map.put(Request.Method.GET, this::createGETConnection);
-        map.put(Request.Method.POST, this::createPOSTConnection);
+        Map<Request.HttpMethod, ConnectionFactory> map = new HashMap<>();
+        map.put(Request.HttpMethod.GET, this::createGETConnection);
+        map.put(Request.HttpMethod.POST, this::createPOSTConnection);
         factory = Collections.unmodifiableMap(map);
+    }
+
+    public SimpleHttpClient(int connectTimeout, int readTimeout) {
+        this.connectTimeout = connectTimeout;
+        this.readTimeout = readTimeout;
     }
 
     @Override
     public Response exchange(Request request) throws IOException {
-        HttpURLConnection urlConnection = factory.get(request.method()).create(request);
+        HttpURLConnection urlConnection = factory.get(request.httpMethod()).create(request);
 
         urlConnection.connect();
 
@@ -47,7 +47,7 @@ class SimpleHttpClient implements HttpClient {
     private HttpURLConnection createGETConnection(Request request) throws IOException {
         URL url = new URL(request.url());
         HttpURLConnection result = (HttpURLConnection) url.openConnection();
-        result.setRequestMethod(request.method().name());
+        result.setRequestMethod(request.httpMethod().name());
         result.setConnectTimeout(connectTimeout);
         result.setReadTimeout(readTimeout);
         return result;
@@ -55,8 +55,7 @@ class SimpleHttpClient implements HttpClient {
 
     private HttpURLConnection createPOSTConnection(Request request) throws IOException {
         HttpURLConnection result = createGETConnection(request);
-        ofNullable(request.contentType())
-            .ifPresent(type -> result.setRequestProperty("Content-Type", type));
+        result.setRequestProperty("Content-Type", "application/json");
         result.setDoInput(true);
         result.setDoOutput(true);
         try (OutputStream os = result.getOutputStream()) {
@@ -80,7 +79,7 @@ class SimpleHttpClient implements HttpClient {
         return content.toString();
     }
 
-    interface ConnectionFactory {
+    private interface ConnectionFactory {
         HttpURLConnection create(Request request) throws IOException;
     }
 }

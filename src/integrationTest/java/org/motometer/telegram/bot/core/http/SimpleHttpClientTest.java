@@ -33,7 +33,7 @@ class SimpleHttpClientTest extends AbstractIntegrationTest {
             .willReturn(okJson(body)));
 
         ImmutableRequest request = ImmutableRequest.builder()
-            .method(Request.Method.GET)
+            .httpMethod(Request.HttpMethod.GET)
             .url(host() + "/bottoken/getUpdates")
             .build();
 
@@ -53,9 +53,8 @@ class SimpleHttpClientTest extends AbstractIntegrationTest {
             .willReturn(okJson(body)));
 
         ImmutableRequest request = ImmutableRequest.builder()
-            .method(Request.Method.POST)
+            .httpMethod(Request.HttpMethod.POST)
             .url(host() + "/bottoken/getUpdates")
-            .contentType("application/json")
             .body("{}")
             .build();
 

@@ -26,16 +26,16 @@ class DefaultBot implements Bot {
 
     @Override
     public User me() {
-        return botTemplate.execute(Method.ME);
+        return botTemplate.execute(Methods.ME);
     }
 
     @Override
     public List<Update> updates() {
-        return botTemplate.execute(Method.UPDATES);
+        return botTemplate.execute(Methods.UPDATES);
     }
 
     @Override
     public Message sendMessage(SendMessage message) {
-        return botTemplate.execute(message, Method.SEND_MESSAGE);
+        return botTemplate.execute(message, Methods.SEND_MESSAGE);
     }
 }
