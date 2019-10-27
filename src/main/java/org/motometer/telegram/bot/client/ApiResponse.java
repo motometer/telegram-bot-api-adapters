@@ -1,4 +1,4 @@
-package org.motometer.telegram.bot.core;
+package org.motometer.telegram.bot.client;
 
 
 import org.immutables.gson.Gson;

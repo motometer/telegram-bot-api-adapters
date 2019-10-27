@@ -1,10 +1,10 @@
-package org.motometer.telegram.bot.core.http;
+package org.motometer.telegram.bot.client.http;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.motometer.telegram.bot.core.AbstractIntegrationTest;
+import org.motometer.telegram.bot.client.AbstractIntegrationTest;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testcontainers.junit.jupiter.Testcontainers;
 

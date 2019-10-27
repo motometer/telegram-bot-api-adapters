@@ -1,13 +1,13 @@
-package org.motometer.telegram.bot.core;
+package org.motometer.telegram.bot.client;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import lombok.RequiredArgsConstructor;
 import org.motometer.telegram.bot.BotException;
-import org.motometer.telegram.bot.core.http.HttpClient;
-import org.motometer.telegram.bot.core.http.ImmutableRequest;
-import org.motometer.telegram.bot.core.http.Request;
-import org.motometer.telegram.bot.core.http.Response;
+import org.motometer.telegram.bot.client.http.HttpClient;
+import org.motometer.telegram.bot.client.http.ImmutableRequest;
+import org.motometer.telegram.bot.client.http.Request;
+import org.motometer.telegram.bot.client.http.Response;
 
 import javax.annotation.Nullable;
 import java.io.IOException;

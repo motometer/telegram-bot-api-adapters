@@ -1,4 +1,4 @@
-package org.motometer.telegram.bot.core.http;
+package org.motometer.telegram.bot.client.http;
 
 import java.io.IOException;
 
