@@ -1,10 +1,10 @@
-package org.motometer.telegram.bot.core.http;
+package org.motometer.telegram.bot.client.http;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.motometer.telegram.bot.core.AbstractIntegrationTest;
+import org.motometer.telegram.bot.client.AbstractIntegrationTest;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -33,7 +33,7 @@ class SimpleHttpClientTest extends AbstractIntegrationTest {
             .willReturn(okJson(body)));
 
         ImmutableRequest request = ImmutableRequest.builder()
-            .method(Request.Method.GET)
+            .httpMethod(Request.HttpMethod.GET)
             .url(host() + "/bottoken/getUpdates")
             .build();
 
@@ -53,9 +53,8 @@ class SimpleHttpClientTest extends AbstractIntegrationTest {
             .willReturn(okJson(body)));
 
         ImmutableRequest request = ImmutableRequest.builder()
-            .method(Request.Method.POST)
+            .httpMethod(Request.HttpMethod.POST)
             .url(host() + "/bottoken/getUpdates")
-            .contentType("application/json")
             .body("{}")
             .build();
 

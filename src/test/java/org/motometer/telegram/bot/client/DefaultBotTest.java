@@ -1,4 +1,4 @@
-package org.motometer.telegram.bot.core;
+package org.motometer.telegram.bot.client;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;

@@ -1,10 +1,10 @@
-package org.motometer.telegram.bot.core;
+package org.motometer.telegram.bot.client;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
 import org.motometer.telegram.bot.Bot;
-import org.motometer.telegram.bot.core.http.HttpClient;
+import org.motometer.telegram.bot.client.http.HttpClient;
 
 import java.util.ServiceLoader;
 

@@ -1,4 +1,4 @@
 @ParametersAreNonnullByDefault
-package org.motometer.telegram.bot.core;
+package org.motometer.telegram.bot.client.http;
 
 import javax.annotation.ParametersAreNonnullByDefault;

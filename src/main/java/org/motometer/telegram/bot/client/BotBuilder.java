@@ -1,7 +1,7 @@
-package org.motometer.telegram.bot.core;
+package org.motometer.telegram.bot.client;
 
 import org.motometer.telegram.bot.Bot;
-import org.motometer.telegram.bot.core.http.HttpClient;
+import org.motometer.telegram.bot.client.http.HttpClient;
 
 public interface BotBuilder {
 

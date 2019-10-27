@@ -1,4 +1,4 @@
-package org.motometer.telegram.bot.core.http;
+package org.motometer.telegram.bot.client.http;
 
 import org.immutables.value.Value;
 
@@ -7,17 +7,14 @@ import javax.annotation.Nullable;
 @Value.Immutable
 public interface Request {
 
-    Method method();
+    HttpMethod httpMethod();
 
     String url();
 
     @Nullable
     String body();
 
-    @Nullable
-    String contentType();
-
-    enum Method {
+    enum HttpMethod {
         GET,
         POST
     }
