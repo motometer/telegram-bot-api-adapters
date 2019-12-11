@@ -58,6 +58,7 @@ repositories {
 dependencies {
     compile 'com.google.code.gson:gson:2.8.6'
     compile 'org.motometer.telegram:telegram-bot-api:0.0.7-SNAPSHOT'
+    compile 'org.slf4j:slf4j-api:1.7.29'
 
     compileOnly jsr305
     compileOnly immutables

@@ -1,5 +1,7 @@
 package org.motometer.telegram.bot.client.http;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +16,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+@Slf4j
 class SimpleHttpClient implements HttpClient {
 
     private final int connectTimeout;
@@ -34,6 +37,7 @@ class SimpleHttpClient implements HttpClient {
 
     @Override
     public Response exchange(Request request) throws IOException {
+        log.trace("Executing request: {}", request);
         HttpURLConnection urlConnection = factory.get(request.httpMethod()).create(request);
 
         urlConnection.connect();
