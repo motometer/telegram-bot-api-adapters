@@ -3,8 +3,10 @@ package org.motometer.telegram.bot.client;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.motometer.telegram.bot.Bot;
+import org.motometer.telegram.bot.BotException;
 import org.motometer.telegram.bot.UpdateListener;
 import org.motometer.telegram.bot.WebHookListener;
+import org.motometer.telegram.bot.api.CallbackQueryAnswer;
 import org.motometer.telegram.bot.api.Message;
 import org.motometer.telegram.bot.api.SendMessage;
 import org.motometer.telegram.bot.api.Update;
@@ -37,5 +39,10 @@ class DefaultBot implements Bot {
     @Override
     public Message sendMessage(SendMessage message) {
         return botTemplate.execute(message, Methods.SEND_MESSAGE);
+    }
+
+    @Override
+    public boolean answerCallbackQuery(CallbackQueryAnswer answer) throws BotException {
+        return botTemplate.execute(answer, Methods.ANSWER_CALLBACK_QUERY);
     }
 }
