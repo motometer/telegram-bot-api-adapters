@@ -2,6 +2,7 @@ package org.motometer.telegram.bot.client;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
+import org.motometer.telegram.bot.Action;
 import org.motometer.telegram.bot.Bot;
 import org.motometer.telegram.bot.api.ChatType;
 import org.motometer.telegram.bot.api.Update;
@@ -21,7 +22,10 @@ class DefaultBotTest {
 
         CompletableFuture<Update> result = new CompletableFuture<>();
 
-        bot.adaptListener(result::complete)
+        bot.adaptListener(e -> {
+            result.complete(e);
+            return Action.empty();
+        })
             .onEvent(IOUtils.resourceToString(UPDATE, Charset.defaultCharset()));
 
         assertThat(result.isDone());

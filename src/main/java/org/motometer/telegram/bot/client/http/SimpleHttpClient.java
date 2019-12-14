@@ -38,14 +38,19 @@ class SimpleHttpClient implements HttpClient {
     @Override
     public Response exchange(Request request) throws IOException {
         log.trace("Executing request: {}", request);
+
         HttpURLConnection urlConnection = factory.get(request.httpMethod()).create(request);
 
         urlConnection.connect();
 
-        return ImmutableResponse.builder()
+        ImmutableResponse response = ImmutableResponse.builder()
             .content(readContent(urlConnection))
             .status(urlConnection.getResponseCode())
             .build();
+
+        log.trace("Telegram API response: {}", response);
+
+        return response;
     }
 
     private HttpURLConnection createGETConnection(Request request) throws IOException {

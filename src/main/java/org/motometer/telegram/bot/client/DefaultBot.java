@@ -23,7 +23,11 @@ class DefaultBot implements Bot {
 
     @Override
     public WebHookListener adaptListener(UpdateListener listener) {
-        return event -> listener.onEvent(gson.fromJson(event, Update.class));
+        return event -> {
+            listener.onEvent(gson.fromJson(event, Update.class))
+                .doAction(this);
+            return null;
+        };
     }
 
     @Override
