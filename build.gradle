@@ -25,11 +25,12 @@ group = "org.motometer.telegram"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-ext."signing.keyId" = System.getenv('GPG_KEY_ID')
-ext."signing.secretKeyRingFile" = System.getenv('GPG_KEY_LOCATION')
-ext."signing.password" = System.getenv('GPG_PASSWORD')
-ext."ossrhUsername" = System.getenv('OSSRH_USERNAME')
-ext."ossrhPassword" = System.getenv('OSSRH_PASSWORD')
+ext.signingKeyFile = "$buildDir/keys/key.gpg"
+ext.'signing.keyId' = System.getenv('GPG_KEY_ID')
+ext.'signing.secretKeyRingFile' = signingKeyFile
+ext.'signing.password' = System.getenv('GPG_PASSWORD')
+ext.'ossrhUsername' = System.getenv('OSSRH_USERNAME')
+ext.'ossrhPassword' = System.getenv('OSSRH_PASSWORD')
 
 ext.'immutables' = 'org.immutables:value:2.8.0'
 ext.'immutablesGson' = 'org.immutables:gson:2.8.0'
@@ -169,3 +170,17 @@ signing {
 
 check.dependsOn integrationTest
 uploadArchives.dependsOn signArchives
+
+task downloadKey {
+    outputs.file("$signingKeyFile")
+    doLast {
+        def file = new File("$signingKeyFile")
+        def keyLocation = System.getenv('GPG_KEY_LOCATION')
+        if (!file.exists() && keyLocation != null) {
+            new URL(keyLocation)
+                    .withInputStream { stream -> file.withOutputStream{ it << stream }}
+        }
+    }
+}
+
+signArchives.dependsOn downloadKey
