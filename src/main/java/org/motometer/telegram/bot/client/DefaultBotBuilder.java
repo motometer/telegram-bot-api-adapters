@@ -22,7 +22,7 @@ class DefaultBotBuilder implements BotBuilder {
 
     @Override
     public Bot build() {
-        return new DefaultBot(new BotTemplate(httpClient, baseUri(), gson), gson);
+        return new DefaultBot(new BotTemplate(httpClient, baseUri(), gson));
     }
 
     private String baseUri() {
