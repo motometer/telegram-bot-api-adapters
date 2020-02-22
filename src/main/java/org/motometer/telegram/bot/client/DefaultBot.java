@@ -1,34 +1,22 @@
 package org.motometer.telegram.bot.client;
 
-import com.google.gson.Gson;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.motometer.telegram.bot.Bot;
 import org.motometer.telegram.bot.BotException;
-import org.motometer.telegram.bot.UpdateListener;
-import org.motometer.telegram.bot.WebHookListener;
 import org.motometer.telegram.bot.api.CallbackQueryAnswer;
 import org.motometer.telegram.bot.api.Message;
 import org.motometer.telegram.bot.api.SendMessage;
 import org.motometer.telegram.bot.api.Update;
 import org.motometer.telegram.bot.api.User;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 
 @RequiredArgsConstructor
 class DefaultBot implements Bot {
 
     private final BotTemplate botTemplate;
-    private final Gson gson;
-
-    @Override
-    public WebHookListener adaptListener(UpdateListener listener) {
-        return event -> {
-            listener.onEvent(gson.fromJson(event, Update.class))
-                .doAction(this);
-            return null;
-        };
-    }
 
     @Override
     public User me() {
